@@ -1,0 +1,20 @@
+# Python
+backend/venv/
+backend/__pycache__/
+*.pyc
+
+# Environment
+.env
+.env.*
+
+# YOLO / ML
+*.pt
+*.onnx
+*.pkl
+
+# Node
+frontend/node_modules/
+frontend/.next/
+
+# IDE
+.vscode/
