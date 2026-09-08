@@ -1,69 +1,79 @@
-import Image from "next/image";
+import Header from "@/components/Header";
+import StatCard from "@/components/StatCard";
+import ParkingMap from "@/components/ParkingMap";
+
+const parkingSlots = [
+  { id: 1, occupied: false },
+  { id: 2, occupied: true },
+  { id: 3, occupied: false },
+  { id: 4, occupied: true },
+  { id: 5, occupied: false },
+  { id: 6, occupied: false },
+  { id: 7, occupied: true },
+  { id: 8, occupied: false },
+  { id: 9, occupied: false },
+  { id: 10, occupied: true },
+  { id: 11, occupied: false },
+  { id: 12, occupied: false },
+  { id: 13, occupied: false },
+  { id: 14, occupied: true },
+  { id: 15, occupied: false },
+  { id: 16, occupied: false },
+  { id: 17, occupied: false },
+  { id: 18, occupied: false },
+  { id: 19, occupied: false },
+];
 
 export default function Home() {
+  const occupied = parkingSlots.filter(slot => slot.occupied).length;
+  const available = parkingSlots.length - occupied;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+    <>
+      <Header />
+      <main className="min-h-screen bg-background px-5 py-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-foreground">
+              Parking Dashboard
+            </h1>
+            <p className="mt-1 text-muted">
+              Monitor parking occupancy in real time.
+            </p>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-3">
+            <StatCard
+              title="Total Spaces"
+              value={parkingSlots.length}
+              type="total"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <StatCard
+              title="Occupied"
+              value={occupied}
+              type="occupied"
+            />
+            <StatCard
+              title="Available"
+              value={available}
+              type="available"
+            />
+          </div>
+
+          <div className="mt-8">
+            <ParkingMap slots={parkingSlots} />
+          </div>
+
+          <div className="mt-5 flex items-center justify-between">
+            <p className="text-sm text-muted">
+              Last updated: Just now
+            </p>
+            <p className="text-sm font-medium text-success">
+              System operating normally
+            </p>
+          </div>
         </div>
       </main>
-    </div>
+    </>
   );
 }
