@@ -1,0 +1,57 @@
+{
+  "total": 12,
+  "occupied": 3,
+  "available": 9,
+  "occupancy_percentage": 25.0,
+  "last_updated": "11:28:39",
+  "slots": [
+    {
+      "id": 1,
+      "occupied": true
+    },
+    {
+      "id": 2,
+      "occupied": true
+    },
+    {
+      "id": 3,
+      "occupied": true
+    },
+    {
+      "id": 4,
+      "occupied": false
+    },
+    {
+      "id": 5,
+      "occupied": false
+    },
+    {
+      "id": 6,
+      "occupied": false
+    },
+    {
+      "id": 7,
+      "occupied": false
+    },
+    {
+      "id": 8,
+      "occupied": false
+    },
+    {
+      "id": 9,
+      "occupied": false
+    },
+    {
+      "id": 10,
+      "occupied": false
+    },
+    {
+      "id": 11,
+      "occupied": false
+    },
+    {
+      "id": 12,
+      "occupied": false
+    }
+  ]
+}

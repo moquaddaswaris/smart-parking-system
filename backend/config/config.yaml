@@ -1,0 +1,36 @@
+# ==============================================================================
+# VisionPark Multi-Camera Configuration
+# Camera RTSP URLs are configured in backend/.env
+# This file configures slot storage files and computer vision thresholds.
+# ==============================================================================
+
+cameras:
+  cam1:
+    name: "Camera 1"
+    # Source is fetched from CAMERA_1_URL in .env
+    slots_file: "config/slots_cam1.json"
+    enabled: true
+
+  cam2:
+    name: "Camera 2"
+    # Source is fetched from CAMERA_2_URL in .env
+    slots_file: "config/slots_cam2.json"
+    enabled: true
+
+# Shared Detection Settings (Optimized for Pi 5 & Laptop CPU)
+detection:
+  model_path: "models/yolo11n.pt"
+  
+  # Raspberry Pi 5 & Laptop Optimization:
+  # Evaluates occupancy every 0.5s (2 Hz) to keep CPU load below 25%
+  interval_sec: 0.5
+  
+  confidence: 0.25
+  overlap_threshold: 0.20
+  imgsz: 640
+  history_size: 3
+
+server:
+  host: "0.0.0.0"
+  port: 8000
+  stream_fps: 15

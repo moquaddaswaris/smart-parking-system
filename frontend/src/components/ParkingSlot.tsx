@@ -1,9 +1,12 @@
 interface ParkingSlotProps {
   id: number;
   occupied: boolean;
+  cameraId?: string;
 }
 
-export default function ParkingSlot({ id, occupied }: ParkingSlotProps) {
+export default function ParkingSlot({ id, occupied, cameraId }: ParkingSlotProps) {
+  const camLabel = cameraId === "cam1" ? "Cam 1" : cameraId === "cam2" ? "Cam 2" : cameraId;
+
   return (
     <div
       className={`relative flex min-h-28 flex-col items-center justify-center rounded-xl border-2 transition ${
@@ -12,6 +15,12 @@ export default function ParkingSlot({ id, occupied }: ParkingSlotProps) {
           : "border-success/30 bg-success-light"
       }`}
     >
+      {camLabel && (
+        <span className="absolute left-2.5 top-2.5 rounded-md bg-white/80 border border-border/60 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500 shadow-2xs">
+          {camLabel}
+        </span>
+      )}
+
       <span className="text-xs font-medium text-muted">
         SLOT
       </span>

@@ -6,6 +6,7 @@ import { Video, Grid } from "lucide-react";
 
 interface ParkingSlotData {
   id: number;
+  camera_id?: string;
   occupied: boolean;
 }
 
@@ -85,9 +86,10 @@ export default function ParkingMap({
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {slots.map(slot => (
               <ParkingSlot
-                key={slot.id}
+                key={`${slot.camera_id || 'cam'}-${slot.id}`}
                 id={slot.id}
                 occupied={slot.occupied}
+                cameraId={slot.camera_id}
               />
             ))}
           </div>

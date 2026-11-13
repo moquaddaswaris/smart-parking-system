@@ -1,0 +1,15 @@
+# VisionPark Dependencies (Optimized for Raspberry Pi 5 ARM64)
+# Install via: pip install -r requirements-rpi.txt
+
+fastapi>=0.110.0
+uvicorn>=0.28.0
+# opencv-python-headless avoids X11 / libGL GUI errors on headless Raspberry Pi OS
+opencv-python-headless>=4.8.0
+ultralytics>=8.2.0
+torch>=2.0.0
+torchvision>=0.15.0
+pyyaml>=6.0
+numpy>=1.24.0,<2.2.0
+pydantic>=2.0.0
+websockets>=12.0
+
