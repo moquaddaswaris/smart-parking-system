@@ -7,7 +7,6 @@ import { ActiveTab, ParkingSlotData } from "@/types/parking";
 
 import Header from "@/components/Header";
 import QuickStats from "@/components/QuickStats";
-import ZoneSelector from "@/components/ZoneSelector";
 import FilterBar from "@/components/FilterBar";
 import CourtyardMap from "@/components/CourtyardMap";
 import ParkingGrid from "@/components/ParkingGrid";
@@ -24,14 +23,10 @@ export default function Home() {
   } = useParkingStatus();
 
   const {
-    selectedZone,
-    setSelectedZone,
     statusFilter,
     setStatusFilter,
     searchQuery,
     setSearchQuery,
-    zoneKeys,
-    zones,
     stats,
     filteredSlots,
   } = useSlotFilter(data);
@@ -85,11 +80,6 @@ export default function Home() {
     setStatusFilter("all");
     setSearchQuery("");
   };
-
-  const activeZoneDisplayName =
-    selectedZone !== "all" && zones[selectedZone]
-      ? zones[selectedZone].name
-      : undefined;
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
@@ -159,17 +149,7 @@ export default function Home() {
           {/* Quick Metrics Hero Card with 6 Up / 6 Down 19-Slot Spatial Bar */}
           <QuickStats
             stats={stats}
-            zoneName={activeZoneDisplayName}
             slots={data?.slots || []}
-          />
-
-          {/* Horizontal Zone Chips */}
-          <ZoneSelector
-            zoneKeys={zoneKeys}
-            zones={zones}
-            selectedZone={selectedZone}
-            onSelectZone={setSelectedZone}
-            totalSpots={data?.total ?? stats.total}
           />
 
           {/* Active Tab View */}
