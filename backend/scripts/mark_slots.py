@@ -9,7 +9,7 @@ import sys
 import json
 import argparse
 from pathlib import Path
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 import cv2
 import numpy as np
 
