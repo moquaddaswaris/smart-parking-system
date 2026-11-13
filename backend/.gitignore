@@ -18,3 +18,4 @@ env/
 # Temporary Snapshots & Cache
 config/camera_snapshot.jpg
 *.log
+
