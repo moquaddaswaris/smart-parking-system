@@ -1,0 +1,22 @@
+{
+  "name": "VisionPark - Smart Parking",
+  "short_name": "VisionPark",
+  "description": "AI-Powered Smart Parking Occupancy System for RGIPT Campus",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/rgipt-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/rgipt-logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+

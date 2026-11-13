@@ -43,12 +43,27 @@ class ParkingEngine:
         self.camera_id = camera_id
         self.slots_file = slots_file
         self.overlap_threshold = overlap_threshold
-        self.history_size = max(1, history_size)
+        self.history_size = max(5, history_size)
         self.use_cv_fallback = use_cv_fallback
         
         self.slots = slots if slots is not None else self._load_slots()
         self.history: Dict[int, deque] = {slot["id"]: deque(maxlen=self.history_size) for slot in self.slots}
         self.last_occupancy: Dict[int, bool] = {slot["id"]: False for slot in self.slots}
+        self.consecutive_occupied: Dict[int, int] = {slot["id"]: 0 for slot in self.slots}
+        self.consecutive_vacant: Dict[int, int] = {slot["id"]: 0 for slot in self.slots}
+
+        # Initialize with cached status from live_status.json if present (fallback for offline camera testing)
+        status_file = Path(self.slots_file).parent / "live_status.json" if self.slots_file else None
+        if status_file and status_file.exists():
+            try:
+                with open(status_file, "r", encoding="utf-8") as f:
+                    cached = json.load(f)
+                    for item in cached.get("slots", []):
+                        sid = item.get("id")
+                        if sid in self.last_occupancy and item.get("occupied"):
+                            self.last_occupancy[sid] = True
+            except Exception:
+                pass
 
     def _normalize_slot(self, slot: Dict[str, Any]) -> Dict[str, Any]:
         """Ensures slot has both polygon 'points' and bounding box 'x1, y1, x2, y2'."""
@@ -83,6 +98,8 @@ class ParkingEngine:
         self.slots = self._load_slots()
         self.history = {slot["id"]: deque(maxlen=self.history_size) for slot in self.slots}
         self.last_occupancy = {slot["id"]: False for slot in self.slots}
+        self.consecutive_occupied = {slot["id"]: 0 for slot in self.slots}
+        self.consecutive_vacant = {slot["id"]: 0 for slot in self.slots}
         print(f"[ParkingEngine] Reloaded {len(self.slots)} parking slots.")
         return self.slots
 
@@ -150,14 +167,26 @@ class ParkingEngine:
             elif detections is None and self.use_cv_fallback and frame is not None and slot_area > 0:
                 is_occupied = self._cv_polygon_check(frame, slot, pts_int)
 
-            # Strategy 3: Temporal smoothing (majority voting)
-            if sid not in self.history:
-                self.history[sid] = deque(maxlen=self.history_size)
-            self.history[sid].append(is_occupied)
+            # Strategy 3: Temporal smoothing with hysteresis state-machine
+            # Prevents single-frame detection drops or momentary camera noise from flickering the state
+            prev_state = self.last_occupancy.get(sid, False)
 
-            votes = sum(1 for v in self.history[sid] if v)
-            smoothed = votes > (len(self.history[sid]) // 2)
-            raw_occupancy[sid] = smoothed
+            if is_occupied:
+                self.consecutive_occupied[sid] = self.consecutive_occupied.get(sid, 0) + 1
+                self.consecutive_vacant[sid] = 0
+            else:
+                self.consecutive_vacant[sid] = self.consecutive_vacant.get(sid, 0) + 1
+                self.consecutive_occupied[sid] = 0
+
+            # Hysteresis state transition:
+            # - Vacant -> Occupied: requires 3 consecutive vehicle detections (1.5 seconds)
+            # - Occupied -> Vacant: requires 4 consecutive empty frames (2.0 seconds)
+            if not prev_state:
+                new_state = (self.consecutive_occupied[sid] >= 3)
+            else:
+                new_state = not (self.consecutive_vacant[sid] >= 4)
+
+            raw_occupancy[sid] = new_state
 
         self.last_occupancy = raw_occupancy
         return raw_occupancy
