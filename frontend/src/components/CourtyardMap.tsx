@@ -18,7 +18,7 @@ export default function CourtyardMap({
   onSelectSlot,
   statusFilter,
 }: CourtyardMapProps) {
-  const [horizontalMode, setHorizontalMode] = useState<"detail" | "fit">("detail");
+  const [horizontalMode, setHorizontalMode] = useState<"detail" | "fit">("fit");
   const [viewportThumbStyle, setViewportThumbStyle] = useState<{ left: string; width: string }>({
     left: "0%",
     width: "44%",
@@ -103,7 +103,7 @@ export default function CourtyardMap({
       {/* View Mode Toggle Header */}
       <div className="flex items-center justify-between gap-2 pb-0.5">
         <span className="text-xs font-black uppercase tracking-wider text-slate-800">
-          Courtyard Layout
+          Parking Lot Map
         </span>
 
         <div className="bg-slate-100 p-0.5 rounded-xl flex items-center gap-1 border border-slate-200">

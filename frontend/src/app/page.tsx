@@ -25,8 +25,6 @@ export default function Home() {
   const {
     statusFilter,
     setStatusFilter,
-    searchQuery,
-    setSearchQuery,
     stats,
     filteredSlots,
   } = useSlotFilter(data);
@@ -78,7 +76,6 @@ export default function Home() {
 
   const handleResetFilters = () => {
     setStatusFilter("all");
-    setSearchQuery("");
   };
 
   return (
@@ -119,7 +116,7 @@ export default function Home() {
                 role="tab"
                 aria-selected={activeTab === "slots"}
                 onClick={() => setActiveTab("slots")}
-                className={`touch-target flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-black transition ${
+                className={`touch-target flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-black transition cursor-pointer ${
                   activeTab === "slots"
                     ? "bg-primary text-white shadow-xs"
                     : "text-muted hover:text-foreground"
@@ -134,7 +131,7 @@ export default function Home() {
                 role="tab"
                 aria-selected={activeTab === "info"}
                 onClick={() => setActiveTab("info")}
-                className={`touch-target flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-black transition ${
+                className={`touch-target flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-black transition cursor-pointer ${
                   activeTab === "info"
                     ? "bg-primary text-white shadow-xs"
                     : "text-muted hover:text-foreground"
@@ -155,12 +152,10 @@ export default function Home() {
           {/* Active Tab View */}
           {activeTab === "slots" && (
             <div className="flex flex-col gap-3">
-              {/* Filter Bar with Status Chips & Search */}
+              {/* Filter Bar with Perfectly Fitted 3-Segment Control (All / Free / Occupied) */}
               <FilterBar
                 statusFilter={statusFilter}
                 onFilterChange={setStatusFilter}
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
                 counts={{
                   total: stats.total,
                   available: stats.available,
@@ -168,44 +163,7 @@ export default function Home() {
                 }}
               />
 
-              {/* View Switcher: Parking Map vs Simple Cards */}
-              <div className="flex items-center justify-between px-1">
-                <span className="text-xs font-black text-foreground">
-                  {slotViewStyle === "courtyard"
-                    ? "Visual Lot Map"
-                    : "Slot Cards (6 Up / 6 Down)"}
-                </span>
-
-                <div className="flex items-center gap-1 bg-slate-200/80 p-0.5 rounded-lg text-xs font-bold">
-                  <button
-                    type="button"
-                    onClick={() => setSlotViewStyle("courtyard")}
-                    className={`touch-target px-2.5 py-1 rounded-md flex items-center gap-1.5 transition ${
-                      slotViewStyle === "courtyard"
-                        ? "bg-white text-slate-900 shadow-2xs font-black"
-                        : "text-slate-600 hover:text-slate-900 font-bold"
-                    }`}
-                  >
-                    <Map className="h-3.5 w-3.5 text-primary" />
-                    <span>Lot Map</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSlotViewStyle("grid")}
-                    className={`touch-target px-2.5 py-1 rounded-md flex items-center gap-1.5 transition ${
-                      slotViewStyle === "grid"
-                        ? "bg-white text-slate-900 shadow-2xs font-black"
-                        : "text-slate-600 hover:text-slate-900 font-bold"
-                    }`}
-                  >
-                    <LayoutGrid className="h-3.5 w-3.5 text-slate-600" />
-                    <span>Cards</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Exact Physical 19-Slot Map: Zone 1 (7 Bays) | 1-Car Gap | Zone 2 (6 Up / 6 Down) */}
+              {/* Exact Physical 19-Slot Map or Cards Grid */}
               {slotViewStyle === "courtyard" ? (
                 <CourtyardMap
                   slots={data?.slots || []}
@@ -221,6 +179,43 @@ export default function Home() {
                   onResetFilters={handleResetFilters}
                 />
               )}
+
+              {/* View Switcher: Moved to the Bottom of the Map/Grid */}
+              <div className="flex items-center justify-between px-1 pt-1 border-t border-border/60">
+                <span className="text-xs font-black text-foreground">
+                  {slotViewStyle === "courtyard"
+                    ? "Visual Lot Map"
+                    : "Slot Cards (6 Up / 6 Down)"}
+                </span>
+
+                <div className="flex items-center gap-1 bg-slate-200/80 p-0.5 rounded-lg text-xs font-bold">
+                  <button
+                    type="button"
+                    onClick={() => setSlotViewStyle("courtyard")}
+                    className={`touch-target px-2.5 py-1 rounded-md flex items-center gap-1.5 transition cursor-pointer ${
+                      slotViewStyle === "courtyard"
+                        ? "bg-white text-slate-900 shadow-2xs font-black"
+                        : "text-slate-600 hover:text-slate-900 font-bold"
+                    }`}
+                  >
+                    <Map className="h-3.5 w-3.5 text-primary" />
+                    <span>Lot Map</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSlotViewStyle("grid")}
+                    className={`touch-target px-2.5 py-1 rounded-md flex items-center gap-1.5 transition cursor-pointer ${
+                      slotViewStyle === "grid"
+                        ? "bg-white text-slate-900 shadow-2xs font-black"
+                        : "text-slate-600 hover:text-slate-900 font-bold"
+                    }`}
+                  >
+                    <LayoutGrid className="h-3.5 w-3.5 text-slate-600" />
+                    <span>Cards</span>
+                  </button>
+                </div>
+              </div>
             </div>
           )}
 
@@ -239,6 +234,18 @@ export default function Home() {
           )}
         </div>
       </main>
+
+      {/* College Institutional Footer */}
+      <footer className="mt-auto border-t border-border bg-card/60 py-4 text-center">
+        <div className="mx-auto max-w-4xl px-4 flex flex-col items-center justify-center gap-0.5">
+          <p className="text-xs font-bold text-slate-700">
+            Developed by <span className="font-extrabold text-foreground">S&amp;T RGIPT</span>
+          </p>
+          <p className="text-[10px] font-semibold text-muted">
+            Science &amp; Technology Council · Rajiv Gandhi Institute of Petroleum Technology
+          </p>
+        </div>
+      </footer>
 
       {/* Slot Details Modal / Bottom Sheet */}
       <SlotDetailSheet
