@@ -110,11 +110,10 @@ export default function CourtyardMap({
           <button
             type="button"
             onClick={() => setHorizontalMode("detail")}
-            className={`touch-target py-1 px-2.5 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 ${
-              !isFit
+            className={`touch-target py-1 px-2.5 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 ${!isFit
                 ? "bg-white text-slate-900 shadow-xs border border-slate-200/80 font-black"
                 : "text-slate-600 hover:text-slate-900 font-bold"
-            }`}
+              }`}
           >
             <MoveHorizontal className="h-3.5 w-3.5 text-sky-600" />
             <span>Detail Pan</span>
@@ -123,11 +122,10 @@ export default function CourtyardMap({
           <button
             type="button"
             onClick={() => setHorizontalMode("fit")}
-            className={`touch-target py-1 px-2.5 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 ${
-              isFit
+            className={`touch-target py-1 px-2.5 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 ${isFit
                 ? "bg-white text-slate-900 shadow-xs border border-slate-200/80 font-black"
                 : "text-slate-600 hover:text-slate-900 font-bold"
-            }`}
+              }`}
           >
             <Maximize2 className="h-3.5 w-3.5 text-emerald-600" />
             <span>Fit Strip</span>
@@ -185,21 +183,18 @@ export default function CourtyardMap({
       <div
         ref={scrollViewportRef}
         onScroll={updateMiniMapViewport}
-        className={`w-full rounded-xl border-2 border-slate-500/80 courtyard-concrete-surface shadow-inner ${
-          isFit ? "overflow-x-hidden" : "overflow-x-auto smooth-pan-scroll no-scrollbar"
-        }`}
+        className={`w-full rounded-xl border-2 border-slate-500/80 courtyard-concrete-surface shadow-inner ${isFit ? "overflow-x-hidden" : "overflow-x-auto smooth-pan-scroll no-scrollbar"
+          }`}
       >
         {/* CONTINUOUS HORIZONTAL LOT CANVAS: Zone 1 [7 cols] + Gap [1 col] + Zone 2 [6 cols] */}
         <div
-          className={`flex flex-col justify-between transition-all duration-200 select-none ${
-            isFit ? "w-full p-1.5" : "w-[920px] p-2.5"
-          }`}
+          className={`flex flex-col justify-between transition-all duration-200 select-none ${isFit ? "w-full p-1.5" : "w-[920px] p-2.5"
+            }`}
         >
           {/* MAIN UNIFIED HORIZONTAL ALIGNMENT ROW */}
           <div
-            className={`flex items-stretch ${
-              isFit ? "gap-1 h-[196px]" : "gap-1.5 h-[280px]"
-            }`}
+            className={`flex items-stretch ${isFit ? "gap-1 h-[196px]" : "gap-1.5 h-[280px]"
+              }`}
           >
             {/* ========================================================= */}
             {/* LEFT SECTION: ZONE 1 (P01 to P07 Horizontally)            */}
@@ -207,14 +202,12 @@ export default function CourtyardMap({
             <div className="flex-[7] min-w-0 flex flex-col justify-between">
               {/* Dark Green Hedge / Garden Island Strip above P01–P07 */}
               <div
-                className={`rounded-t-xl rounded-b-md hedge-island-surface border-2 border-[#142c16] shadow-inner flex flex-col items-center justify-center px-1.5 relative overflow-hidden ${
-                  isFit ? "h-[76px]" : "h-[88px]"
-                }`}
+                className={`rounded-t-xl rounded-b-md hedge-island-surface border-2 border-[#142c16] shadow-inner flex flex-col items-center justify-center px-1.5 relative overflow-hidden ${isFit ? "h-[76px]" : "h-[88px]"
+                  }`}
               >
                 <span
-                  className={`font-black tracking-widest uppercase text-emerald-100 bg-black/40 px-2 py-0.5 rounded-full border border-emerald-400/30 ${
-                    isFit ? "text-[7px]" : "text-[10px]"
-                  }`}
+                  className={`font-black tracking-widest uppercase text-emerald-100 bg-black/40 px-2 py-0.5 rounded-full border border-emerald-400/30 ${isFit ? "text-[7px]" : "text-[10px]"
+                    }`}
                 >
                   HEDGE / GARDEN ISLAND
                 </span>
@@ -227,9 +220,8 @@ export default function CourtyardMap({
 
               {/* 7 Horizontal Bays: P01 to P07 */}
               <div
-                className={`grid grid-cols-7 mt-auto ${
-                  isFit ? "gap-[2px] h-[112px]" : "gap-1 h-[178px]"
-                }`}
+                className={`grid grid-cols-7 mt-auto ${isFit ? "gap-[2px] h-[112px]" : "gap-1 h-[178px]"
+                  }`}
               >
                 {zone1Slots.map((slot) => (
                   <ParkingBay
@@ -268,9 +260,8 @@ export default function CourtyardMap({
               {/* Vertical 1-CAR GAP Label */}
               <div className="my-auto flex items-center justify-center">
                 <span
-                  className={`bg-slate-900/95 text-amber-300 border border-amber-400/50 rounded px-0.5 py-1.5 font-black uppercase tracking-widest whitespace-nowrap [writing-mode:vertical-rl] rotate-180 shadow-xs ${
-                    isFit ? "text-[6.5px]" : "text-[9px]"
-                  }`}
+                  className={`bg-slate-900/95 text-amber-300 border border-amber-400/50 rounded px-0.5 py-1.5 font-black uppercase tracking-widest whitespace-nowrap [writing-mode:vertical-rl] rotate-180 shadow-xs ${isFit ? "text-[6.5px]" : "text-[9px]"
+                    }`}
                 >
                   1-CAR GAP
                 </span>
@@ -290,16 +281,14 @@ export default function CourtyardMap({
             <div className="flex-[6] min-w-0 flex flex-col justify-between">
               {/* Courtyard Plaza / Steps Landmark Header above P19–P14 */}
               <div
-                className={`rounded-t-lg courtyard-plaza-surface border border-slate-500/80 flex items-center justify-center px-1 shadow-xs ${
-                  isFit ? "h-[16px]" : "h-[24px]"
-                }`}
+                className={`rounded-t-lg courtyard-plaza-surface border border-slate-500/80 flex items-center justify-center px-1 shadow-xs ${isFit ? "h-[16px]" : "h-[24px]"
+                  }`}
               >
                 <span
-                  className={`font-black uppercase text-slate-900 bg-white/90 px-1.5 py-0.2 rounded ${
-                    isFit ? "text-[6.5px]" : "text-[8.5px] tracking-widest"
-                  }`}
+                  className={`font-black uppercase text-slate-900 bg-white/90 px-1.5 py-0.2 rounded ${isFit ? "text-[6.5px]" : "text-[8.5px] tracking-widest"
+                    }`}
                 >
-                  {isFit ? "PLAZA" : "COURTYARD PLAZA · STEPS"}
+                  {isFit ? "RG PLAZA" : "RG PLAZA · STEPS"}
                 </span>
               </div>
 
@@ -307,9 +296,8 @@ export default function CourtyardMap({
               <div className="flex-1 flex flex-col justify-between mt-1">
                 {/* Top/Back Row: P19, P18, P17, P16, P15, P14 */}
                 <div
-                  className={`grid grid-cols-6 ${
-                    isFit ? "gap-[2px] h-[85px]" : "gap-1 h-[120px]"
-                  }`}
+                  className={`grid grid-cols-6 ${isFit ? "gap-[2px] h-[85px]" : "gap-1 h-[120px]"
+                    }`}
                 >
                   {zone2TopRow.map((slot) => (
                     <ParkingBay
@@ -330,9 +318,8 @@ export default function CourtyardMap({
 
                 {/* Bottom/Front Row: P08, P09, P10, P11, P12, P13 */}
                 <div
-                  className={`grid grid-cols-6 ${
-                    isFit ? "gap-[2px] h-[85px]" : "gap-1 h-[120px]"
-                  }`}
+                  className={`grid grid-cols-6 ${isFit ? "gap-[2px] h-[85px]" : "gap-1 h-[120px]"
+                    }`}
                 >
                   {zone2BottomRow.map((slot) => (
                     <ParkingBay

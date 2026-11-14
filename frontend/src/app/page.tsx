@@ -235,16 +235,11 @@ export default function Home() {
         </div>
       </main>
 
-      {/* College Institutional Footer */}
-      <footer className="mt-auto border-t border-border bg-card/60 py-4 text-center">
-        <div className="mx-auto max-w-4xl px-4 flex flex-col items-center justify-center gap-0.5">
-          <p className="text-xs font-bold text-slate-700">
-            Developed by <span className="font-extrabold text-foreground">S&amp;T RGIPT</span>
-          </p>
-          <p className="text-[10px] font-semibold text-muted">
-            Science &amp; Technology Council · Rajiv Gandhi Institute of Petroleum Technology
-          </p>
-        </div>
+      {/* Minimalist Footer */}
+      <footer className="mt-auto border-t border-border/60 py-4 text-center">
+        <p className="text-xs font-semibold text-muted">
+          © {new Date().getFullYear()} Developed by S&amp;T RGIPT
+        </p>
       </footer>
 
       {/* Slot Details Modal / Bottom Sheet */}
