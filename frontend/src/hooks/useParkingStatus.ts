@@ -3,15 +3,19 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { ParkingStatusResponse, ParkingSlotData, ZoneStatus } from "@/types/parking";
 
-const DEFAULT_CLOUD_URL = "https://smart-parking-system-u370.onrender.com";
-const DEFAULT_LOCAL_URL = "http://localhost:8000";
+// Hardcoded strictly to localhost:8000 to eliminate any fluctuation
+const LOCAL_API_URL = "http://localhost:8000";
 
-function normalizeBaseUrl(url: string): string {
-  return (url || "").trim().replace(/\/+$/, "").replace(/\/api\/parking(\/status)?\/?$/, "");
+function normalizeBaseUrl(url?: string): string {
+  const target = (url || LOCAL_API_URL).trim();
+  // Strip any Render cloud fallback or trailing paths
+  if (target.includes("render.com") || target.includes("smart-parking-system")) {
+    return LOCAL_API_URL;
+  }
+  return target.replace(/\/+$/, "").replace(/\/api\/parking(\/status)?\/?$/, "");
 }
 
-const INITIAL_API_BASE =
-  normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL || DEFAULT_LOCAL_URL);
+const API_BASE = normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL || LOCAL_API_URL);
 
 // Helper to format zone labels cleanly without camera, linear, or parallel mentions
 export function formatZoneName(rawId?: string, rawName?: string): string {
@@ -24,26 +28,17 @@ export function formatZoneName(rawId?: string, rawName?: string): string {
 }
 
 export function useParkingStatus() {
-  const [apiBase, setApiBase] = useState<string>(INITIAL_API_BASE);
   const [data, setData] = useState<ParkingStatusResponse | null>(null);
   const [isLive, setIsLive] = useState<boolean>(false);
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [isConnecting, setIsConnecting] = useState<boolean>(true);
   const [connectionError, setConnectionError] = useState<string | null>(null);
-  const [activeBackendType, setActiveBackendType] = useState<"cloud" | "local">(
-    INITIAL_API_BASE.includes("127.0.0.1") || INITIAL_API_BASE.includes("localhost")
-      ? "local"
-      : "cloud"
-  );
 
   const wsRef = useRef<WebSocket | null>(null);
   const wsConnectedRef = useRef<boolean>(false);
   const isMountedRef = useRef<boolean>(true);
-  const activeUrlRef = useRef<string>(apiBase);
   const rawBackendDataRef = useRef<ParkingStatusResponse | null>(null);
   const lastSignatureRef = useRef<string>("");
-
-  activeUrlRef.current = apiBase;
 
   // Process incoming backend payload: clean zone labels and sort slots 1..N
   const processBackendResponse = useCallback(
@@ -142,31 +137,29 @@ export function useParkingStatus() {
     [processBackendResponse]
   );
 
-  const fetchStatusFromUrl = useCallback(
-    async (rawUrl: string): Promise<boolean> => {
-      try {
-        const url = normalizeBaseUrl(rawUrl);
-        const res = await fetch(`${url}/api/parking/status`, {
-          cache: "no-store",
-          headers: { Accept: "application/json" },
-          signal: AbortSignal.timeout(4000),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const json: ParkingStatusResponse = await res.json();
-        applyStatus(json);
-        return true;
-      } catch {
-        return false;
+  const fetchStatus = useCallback(async (): Promise<boolean> => {
+    try {
+      const res = await fetch(`${API_BASE}/api/parking/status`, {
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+        signal: AbortSignal.timeout(4000),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json: ParkingStatusResponse = await res.json();
+      applyStatus(json);
+      return true;
+    } catch {
+      if (!wsConnectedRef.current && isMountedRef.current) {
+        setIsLive(false);
       }
-    },
-    [applyStatus]
-  );
+      return false;
+    }
+  }, [applyStatus]);
 
   const refresh = useCallback(async () => {
     setIsRefreshing(true);
     try {
-      const url = normalizeBaseUrl(activeUrlRef.current);
-      const res = await fetch(`${url}/api/parking/refresh`, {
+      const res = await fetch(`${API_BASE}/api/parking/refresh`, {
         method: "POST",
         cache: "no-store",
         signal: AbortSignal.timeout(4000),
@@ -175,48 +168,31 @@ export function useParkingStatus() {
         const json: ParkingStatusResponse = await res.json();
         applyStatus(json);
       } else {
-        await fetchStatusFromUrl(url);
+        await fetchStatus();
       }
     } catch {
-      await fetchStatusFromUrl(activeUrlRef.current);
+      await fetchStatus();
     } finally {
       if (isMountedRef.current) {
         setTimeout(() => setIsRefreshing(false), 200);
       }
     }
-  }, [applyStatus, fetchStatusFromUrl]);
+  }, [applyStatus, fetchStatus]);
 
-  const switchBackend = useCallback(
-    async (target: "cloud" | "local") => {
-      const newUrl = target === "local" ? DEFAULT_LOCAL_URL : DEFAULT_CLOUD_URL;
-      setIsConnecting(true);
-      setApiBase(newUrl);
-      activeUrlRef.current = newUrl;
-      setActiveBackendType(target);
-      lastSignatureRef.current = "";
-
-      const ok = await fetchStatusFromUrl(newUrl);
-      if (!ok) {
-        setIsLive(false);
-        setConnectionError(
-          `Could not reach ${target === "local" ? "local backend (port 8000)" : "cloud backend"}`
-        );
-      }
-      setIsConnecting(false);
-    },
-    [fetchStatusFromUrl]
-  );
+  // Backward-compatible switchBackend function (locked to local)
+  const switchBackend = useCallback(async () => {
+    await fetchStatus();
+  }, [fetchStatus]);
 
   useEffect(() => {
     isMountedRef.current = true;
     let pollInterval: ReturnType<typeof setInterval>;
     let wsReconnectTimeout: ReturnType<typeof setTimeout>;
 
-    const connectWebSocket = (targetUrl: string) => {
+    const connectWebSocket = () => {
       if (!isMountedRef.current) return;
       try {
-        const normalized = normalizeBaseUrl(targetUrl);
-        const wsUrl = normalized.replace(/^http/, "ws") + "/api/parking/ws";
+        const wsUrl = API_BASE.replace(/^http/, "ws") + "/api/parking/ws";
         const ws = new WebSocket(wsUrl);
         wsRef.current = ws;
 
@@ -241,7 +217,10 @@ export function useParkingStatus() {
         ws.onclose = () => {
           if (!isMountedRef.current) return;
           wsConnectedRef.current = false;
-          wsReconnectTimeout = setTimeout(() => connectWebSocket(activeUrlRef.current), 4000);
+          // Reconnect to localhost WebSocket after 3s
+          wsReconnectTimeout = setTimeout(() => {
+            if (isMountedRef.current) connectWebSocket();
+          }, 3000);
         };
 
         ws.onerror = () => {
@@ -252,43 +231,21 @@ export function useParkingStatus() {
         };
       } catch {
         wsConnectedRef.current = false;
-        wsReconnectTimeout = setTimeout(() => connectWebSocket(activeUrlRef.current), 5000);
+        wsReconnectTimeout = setTimeout(() => {
+          if (isMountedRef.current) connectWebSocket();
+        }, 3000);
       }
     };
 
-    const initializeConnection = async () => {
-      // Auto-probing: Check if local campus backend (port 8000) is running first
-      let resolvedUrl = normalizeBaseUrl(apiBase);
-      try {
-        const localProbe = await fetch(`${DEFAULT_LOCAL_URL}/api/parking/status`, {
-          cache: "no-store",
-          signal: AbortSignal.timeout(1200),
-        });
-        if (localProbe.ok) {
-          const json: ParkingStatusResponse = await localProbe.json();
-          resolvedUrl = DEFAULT_LOCAL_URL;
-          setApiBase(DEFAULT_LOCAL_URL);
-          activeUrlRef.current = DEFAULT_LOCAL_URL;
-          setActiveBackendType("local");
-          applyStatus(json);
-          connectWebSocket(DEFAULT_LOCAL_URL);
-          return;
-        }
-      } catch {
-        // Local not active, proceed to primary cloud endpoint
-      }
+    // Immediate initial fetch to localhost
+    fetchStatus();
+    // Connect WebSocket to localhost
+    connectWebSocket();
 
-      // Sync from cloud backend
-      activeUrlRef.current = resolvedUrl;
-      await fetchStatusFromUrl(resolvedUrl);
-      connectWebSocket(resolvedUrl);
-    };
-
-    initializeConnection();
-
+    // Fallback polling strictly against localhost:8000 when WS is not active
     pollInterval = setInterval(() => {
       if (!wsConnectedRef.current && isMountedRef.current) {
-        fetchStatusFromUrl(activeUrlRef.current);
+        fetchStatus();
       }
     }, 2500);
 
@@ -300,7 +257,7 @@ export function useParkingStatus() {
         wsRef.current.close();
       }
     };
-  }, [apiBase, fetchStatusFromUrl, applyStatus]);
+  }, [fetchStatus, applyStatus]);
 
   return {
     data,
@@ -309,8 +266,8 @@ export function useParkingStatus() {
     isConnecting,
     connectionError,
     refresh,
-    apiBase,
-    activeBackendType,
+    apiBase: API_BASE,
+    activeBackendType: "local" as const,
     switchBackend,
   };
 }
