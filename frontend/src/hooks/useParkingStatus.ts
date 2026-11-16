@@ -4,10 +4,14 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { ParkingStatusResponse, ParkingSlotData, ZoneStatus } from "@/types/parking";
 
 const DEFAULT_CLOUD_URL = "https://smart-parking-system-u370.onrender.com";
-const DEFAULT_LOCAL_URL = "http://127.0.0.1:8000";
+const DEFAULT_LOCAL_URL = "http://localhost:8000";
+
+function normalizeBaseUrl(url: string): string {
+  return (url || "").trim().replace(/\/+$/, "").replace(/\/api\/parking(\/status)?\/?$/, "");
+}
 
 const INITIAL_API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || DEFAULT_CLOUD_URL;
+  normalizeBaseUrl(process.env.NEXT_PUBLIC_API_URL || DEFAULT_LOCAL_URL);
 
 // Helper to format zone labels cleanly without camera, linear, or parallel mentions
 export function formatZoneName(rawId?: string, rawName?: string): string {
@@ -139,8 +143,9 @@ export function useParkingStatus() {
   );
 
   const fetchStatusFromUrl = useCallback(
-    async (url: string): Promise<boolean> => {
+    async (rawUrl: string): Promise<boolean> => {
       try {
+        const url = normalizeBaseUrl(rawUrl);
         const res = await fetch(`${url}/api/parking/status`, {
           cache: "no-store",
           headers: { Accept: "application/json" },
@@ -160,7 +165,7 @@ export function useParkingStatus() {
   const refresh = useCallback(async () => {
     setIsRefreshing(true);
     try {
-      const url = activeUrlRef.current;
+      const url = normalizeBaseUrl(activeUrlRef.current);
       const res = await fetch(`${url}/api/parking/refresh`, {
         method: "POST",
         cache: "no-store",
@@ -210,7 +215,8 @@ export function useParkingStatus() {
     const connectWebSocket = (targetUrl: string) => {
       if (!isMountedRef.current) return;
       try {
-        const wsUrl = targetUrl.replace(/^http/, "ws") + "/api/parking/ws";
+        const normalized = normalizeBaseUrl(targetUrl);
+        const wsUrl = normalized.replace(/^http/, "ws") + "/api/parking/ws";
         const ws = new WebSocket(wsUrl);
         wsRef.current = ws;
 
@@ -252,7 +258,7 @@ export function useParkingStatus() {
 
     const initializeConnection = async () => {
       // Auto-probing: Check if local campus backend (port 8000) is running first
-      let resolvedUrl = apiBase;
+      let resolvedUrl = normalizeBaseUrl(apiBase);
       try {
         const localProbe = await fetch(`${DEFAULT_LOCAL_URL}/api/parking/status`, {
           cache: "no-store",
