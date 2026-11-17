@@ -235,10 +235,13 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Minimalist Footer */}
-      <footer className="mt-auto border-t border-border/60 py-4 text-center">
-        <p className="text-xs font-semibold text-muted">
+      {/* Minimalist Footer with Engineering Credits */}
+      <footer className="mt-auto border-t border-border/60 py-3.5 px-3 sm:px-6 text-center bg-card/50">
+        <p className="text-xs font-bold text-foreground">
           © {new Date().getFullYear()} Developed by S&amp;T RGIPT
+        </p>
+        <p className="mt-1 text-[11px] font-semibold text-muted">
+          Moquaddas Waris · Jitesh Saagar · Arin Kumar
         </p>
       </footer>
 

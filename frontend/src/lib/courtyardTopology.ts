@@ -34,10 +34,10 @@ export const COURTYARD_TOPOLOGY: Record<number, SlotTopology> = {
   4: { id: 4, code: "P04", zone: "zone1", zoneLabel: "Zone 1 · Linear Row", leftNeighbor: "P03", rightNeighbor: "P05", pairedWith: null, styleIdx: 4 },
   5: { id: 5, code: "P05", zone: "zone1", zoneLabel: "Zone 1 · Linear Row", leftNeighbor: "P04", rightNeighbor: "P06", pairedWith: null, styleIdx: 2 },
   6: { id: 6, code: "P06", zone: "zone1", zoneLabel: "Zone 1 · Linear Row", leftNeighbor: "P05", rightNeighbor: "P07", pairedWith: null, styleIdx: 3 },
-  7: { id: 7, code: "P07", zone: "zone1", zoneLabel: "Zone 1 · Linear Row", leftNeighbor: "P06", rightNeighbor: "1-Car Gap", pairedWith: null, styleIdx: 5 },
+  7: { id: 7, code: "P07", zone: "zone1", zoneLabel: "Zone 1 · Linear Row", leftNeighbor: "P06", rightNeighbor: "No Parking Zone", pairedWith: null, styleIdx: 5 },
 
   // Zone 2 Bottom/Front Row (Left to Right: P08 -> P13)
-  8: { id: 8, code: "P08", zone: "zone2", zoneLabel: "Zone 2 · Parallel Grid (Front)", leftNeighbor: "1-Car Gap", rightNeighbor: "P09", pairedWith: "P19", styleIdx: 4 },
+  8: { id: 8, code: "P08", zone: "zone2", zoneLabel: "Zone 2 · Parallel Grid (Front)", leftNeighbor: "No Parking Zone", rightNeighbor: "P09", pairedWith: "P19", styleIdx: 4 },
   9: { id: 9, code: "P09", zone: "zone2", zoneLabel: "Zone 2 · Parallel Grid (Front)", leftNeighbor: "P08", rightNeighbor: "P10", pairedWith: "P18", styleIdx: 5 },
   10: { id: 10, code: "P10", zone: "zone2", zoneLabel: "Zone 2 · Parallel Grid (Front)", leftNeighbor: "P09", rightNeighbor: "P11", pairedWith: "P17", styleIdx: 4 },
   11: { id: 11, code: "P11", zone: "zone2", zoneLabel: "Zone 2 · Parallel Grid (Front)", leftNeighbor: "P10", rightNeighbor: "P12", pairedWith: "P16", styleIdx: 5 },
@@ -50,7 +50,7 @@ export const COURTYARD_TOPOLOGY: Record<number, SlotTopology> = {
   16: { id: 16, code: "P16", zone: "zone2", zoneLabel: "Zone 2 · Parallel Grid (Back)", leftNeighbor: "P17", rightNeighbor: "P15", pairedWith: "P11", styleIdx: 4 },
   17: { id: 17, code: "P17", zone: "zone2", zoneLabel: "Zone 2 · Parallel Grid (Back)", leftNeighbor: "P18", rightNeighbor: "P16", pairedWith: "P10", styleIdx: 4 },
   18: { id: 18, code: "P18", zone: "zone2", zoneLabel: "Zone 2 · Parallel Grid (Back)", leftNeighbor: "P19", rightNeighbor: "P17", pairedWith: "P09", styleIdx: 5 },
-  19: { id: 19, code: "P19", zone: "zone2", zoneLabel: "Zone 2 · Parallel Grid (Back)", leftNeighbor: "1-Car Gap", rightNeighbor: "P18", pairedWith: "P08", styleIdx: 6 },
+  19: { id: 19, code: "P19", zone: "zone2", zoneLabel: "Zone 2 · Parallel Grid (Back)", leftNeighbor: "No Parking Zone", rightNeighbor: "P18", pairedWith: "P08", styleIdx: 6 },
 };
 
 export function getSlotCode(id: number): string {

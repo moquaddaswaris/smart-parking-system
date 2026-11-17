@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { ParkingSlotData, SlotFilterStatus } from "@/types/parking";
 import ParkingBay from "./ParkingBay";
-import { Maximize2, MoveHorizontal } from "lucide-react";
+import { Maximize2, MoveHorizontal, Ban, Bike } from "lucide-react";
 
 interface CourtyardMapProps {
   slots: ParkingSlotData[];
@@ -149,9 +149,10 @@ export default function CourtyardMap({
             <button
               type="button"
               onClick={() => scrollToSection("gap")}
-              className="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-[9px] font-black uppercase tracking-tight shrink-0 cursor-pointer"
+              className="px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 text-[9px] font-black uppercase tracking-tight shrink-0 cursor-pointer flex items-center gap-1"
             >
-              1-Car Gap
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block" />
+              No Parking Zone
             </button>
 
             <button
@@ -237,40 +238,46 @@ export default function CourtyardMap({
             </div>
 
             {/* ========================================================= */}
-            {/* CENTER DIVIDER: 1-CAR GAP                                 */}
+            {/* CENTER DIVIDER: NO PARKING ZONE                           */}
+            {/* Exactly the 1-car gap layout with No Parking text & logo */}
             {/* ========================================================= */}
             <div
               className="flex-[1] min-w-0 rounded-xl border-x-2 border-dashed border-slate-600/80 bg-slate-300/50 flex flex-col items-center justify-between py-1 px-0.5 relative"
-              aria-label="1-Car Gap between Zone 1 and Zone 2"
+              aria-label="No Parking Zone between Zone 1 and Zone 2"
             >
-              {/* Top Two-Wheeler (2W) Landmark */}
-              <div className="flex flex-col items-center bg-slate-800 text-slate-100 p-0.5 rounded border border-slate-600 shadow-2xs">
-                <svg className="w-3 h-3 text-sky-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="5.5" cy="17.5" r="3.5" />
-                  <circle cx="18.5" cy="17.5" r="3.5" />
-                  <path d="M15 6h3l2 5.5M5.5 17.5L9 11h5l2 6.5" />
-                </svg>
+              {/* Top Cycle / Bicycle Landmark */}
+              <div
+                className="flex flex-col items-center bg-slate-800 text-slate-100 p-0.5 rounded border border-slate-600 shadow-2xs"
+                title="Cycle & 2-Wheeler Stand"
+              >
+                <Bike className="w-3 h-3 text-sky-300" />
                 {!isFit && (
-                  <span className="text-[7px] font-black uppercase text-slate-300 mt-0.5">
-                    2W
+                  <span className="text-[6px] font-black uppercase text-sky-200 mt-0.5 leading-none">
+                    CYCLE
                   </span>
                 )}
               </div>
 
-              {/* Vertical 1-CAR GAP Label */}
-              <div className="my-auto flex items-center justify-center">
-                <span
-                  className={`bg-slate-900/95 text-amber-300 border border-amber-400/50 rounded px-0.5 py-1.5 font-black uppercase tracking-widest whitespace-nowrap [writing-mode:vertical-rl] rotate-180 shadow-xs ${isFit ? "text-[6.5px]" : "text-[9px]"
-                    }`}
+              {/* Combined Vertical NO PARKING ZONE Label with No Parking Logo */}
+              <div className="my-auto flex flex-col items-center justify-center">
+                <div
+                  className={`bg-slate-900/95 text-amber-300 border border-amber-400/50 rounded px-0.5 py-1.5 flex flex-col items-center gap-1 shadow-xs`}
                 >
-                  1-CAR GAP
-                </span>
+                  <Ban className={`text-amber-400 shrink-0 ${isFit ? "w-2.5 h-2.5" : "w-3 h-3"}`} />
+                  <span
+                    className={`font-black uppercase tracking-widest whitespace-nowrap [writing-mode:vertical-rl] rotate-180 ${
+                      isFit ? "text-[5.5px]" : "text-[8px]"
+                    }`}
+                  >
+                    NO PARKING ZONE
+                  </span>
+                </div>
               </div>
 
               {/* Bottom Badge */}
               {!isFit && (
                 <div className="text-[7px] font-mono font-bold text-slate-700 bg-white/80 px-1 py-0.5 rounded border border-slate-400">
-                  GAP
+                  NO PKG
                 </div>
               )}
             </div>

@@ -51,9 +51,9 @@ export default function QuickStats({ stats, zoneName, slots = [] }: QuickStatsPr
         </span>
       </div>
 
-      {/* 19-Slot Status Bar Mirroring Physical Layout: Zone 1 (7 Linear) | Gap | Zone 2 (6 Up / 6 Down) */}
+      {/* 19-Slot Status Bar Mirroring Physical Layout: Zone 1 (7 Linear) | No Parking Zone | Zone 2 (6 Up / 6 Down) */}
       <div
-        className="flex items-center gap-1.5 mt-3"
+        className="flex items-center gap-[2px] mt-3"
         aria-label="19-slot spatial bar with 6 up and 6 down"
       >
         {/* Left 7 segments (Zone 1: P01–P07) */}
@@ -61,22 +61,22 @@ export default function QuickStats({ stats, zoneName, slots = [] }: QuickStatsPr
           {zone1Slots.map((s) => (
             <span
               key={`bar-z1-${s.id}`}
-              title={`P${String(s.id).padStart(2, "0")}: ${
-                s.occupied ? "Occupied" : "Free"
-              }`}
-              className={`h-full transition-colors duration-200 ${
-                s.occupied ? "bg-[#dc2626]" : "bg-[#16a34a]"
-              }`}
+              title={`P${String(s.id).padStart(2, "0")}: ${s.occupied ? "Occupied" : "Free"
+                }`}
+              className={`h-full transition-colors duration-200 ${s.occupied ? "bg-[#dc2626]" : "bg-[#16a34a]"
+                }`}
             />
           ))}
         </div>
 
-        {/* Center 1-Car Gap notch */}
+        {/* Center No Parking Zone notch */}
         <div
-          className="w-2 h-6 rounded-xs bg-amber-400 border border-amber-500 shrink-0 flex items-center justify-center"
-          title="1-Car Gap"
+          className="h-6 px-1.5 rounded-xs bg-amber-400 border border-amber-500 shrink-0 flex items-center justify-center shadow-2xs"
+          title="No Parking Zone"
         >
-          <span className="text-[6px] font-black text-amber-950">G</span>
+          <span className="text-[7.5px] font-black text-amber-950 tracking-tight leading-none select-none">
+            NP
+          </span>
         </div>
 
         {/* Right 12 segments: 6 Up and 6 Down (Zone 2: P08–P19) */}
@@ -86,12 +86,10 @@ export default function QuickStats({ stats, zoneName, slots = [] }: QuickStatsPr
             {zone2TopRow.map((s) => (
               <span
                 key={`bar-z2-top-${s.id}`}
-                title={`P${String(s.id).padStart(2, "0")} (6 Up): ${
-                  s.occupied ? "Occupied" : "Free"
-                }`}
-                className={`h-full transition-colors duration-200 ${
-                  s.occupied ? "bg-[#dc2626]" : "bg-[#16a34a]"
-                }`}
+                title={`P${String(s.id).padStart(2, "0")} (6 Up): ${s.occupied ? "Occupied" : "Free"
+                  }`}
+                className={`h-full transition-colors duration-200 ${s.occupied ? "bg-[#dc2626]" : "bg-[#16a34a]"
+                  }`}
               />
             ))}
           </div>
@@ -101,12 +99,10 @@ export default function QuickStats({ stats, zoneName, slots = [] }: QuickStatsPr
             {zone2BottomRow.map((s) => (
               <span
                 key={`bar-z2-bot-${s.id}`}
-                title={`P${String(s.id).padStart(2, "0")} (6 Down): ${
-                  s.occupied ? "Occupied" : "Free"
-                }`}
-                className={`h-full transition-colors duration-200 ${
-                  s.occupied ? "bg-[#dc2626]" : "bg-[#16a34a]"
-                }`}
+                title={`P${String(s.id).padStart(2, "0")} (6 Down): ${s.occupied ? "Occupied" : "Free"
+                  }`}
+                className={`h-full transition-colors duration-200 ${s.occupied ? "bg-[#dc2626]" : "bg-[#16a34a]"
+                  }`}
               />
             ))}
           </div>
